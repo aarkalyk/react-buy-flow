@@ -12,4 +12,6 @@ export type InputProps = {
 export type BuyFlowData = {
   email: string
   age: number
+  firstName?: string
+  lastName?: string
 }

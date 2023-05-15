@@ -10,16 +10,19 @@ interface BuyflowProps {
 
 export enum ProductIds {
   devIns = 'dev_ins',
+  designerIns = 'designer_ins',
 }
 
-const PRODUCT_IDS_TO_NAMES = {
+const PRODUCT_IDS_TO_NAMES: { [key in ProductIds]: string } = {
   [ProductIds.devIns]: 'Developer Insurance',
+  [ProductIds.designerIns]: 'Designer Insurance',
 }
 
-type StepName = 'email' | 'age' | 'summary'
+type StepName = 'email' | 'age' | 'fullName' | 'summary'
 
 const PRODUCT_IDS_TO_STEPS: { [key in ProductIds]: StepName[] } = {
   [ProductIds.devIns]: ['email', 'age', 'summary'],
+  [ProductIds.designerIns]: ['email', 'age', 'fullName', 'summary'],
 }
 
 const INPUT_PROPS_TO_STEPS: { [key in StepName]: InputProps[] } = {
@@ -39,6 +42,24 @@ const INPUT_PROPS_TO_STEPS: { [key in StepName]: InputProps[] } = {
       title: 'Email',
       type: 'string',
       ariaLabel: 'Enter your email here',
+      initialValue: '',
+      required: true,
+    },
+  ],
+  fullName: [
+    {
+      name: 'firstName',
+      title: 'First name',
+      type: 'string',
+      ariaLabel: 'Enter your first name here',
+      initialValue: '',
+      required: true,
+    },
+    {
+      name: 'lastName',
+      title: 'Last name',
+      type: 'string',
+      ariaLabel: 'Enter your last name here',
       initialValue: '',
       required: true,
     },
