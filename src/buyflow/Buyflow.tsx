@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import DataInputStep from './DataInputStep'
+
+import DataInputStep from './components/DataInputStep'
+import SummaryStep from './components/SummaryStep'
 import { BuyFlowData, InputProps } from './types'
-import SummaryStep from './SummaryStep'
 
 interface BuyflowProps {
   productId: ProductIds
@@ -21,9 +22,27 @@ const PRODUCT_IDS_TO_STEPS: { [key in ProductIds]: StepName[] } = {
   [ProductIds.devIns]: ['email', 'age', 'summary'],
 }
 
-const INPUT_DATA_TO_STEPS: { [key in StepName]: InputProps[] } = {
-  age: [{ name: 'age', title: 'age', type: 'number', initialValue: '' }],
-  email: [{ name: 'email', title: 'email', type: 'string', initialValue: '' }],
+const INPUT_PROPS_TO_STEPS: { [key in StepName]: InputProps[] } = {
+  age: [
+    {
+      name: 'age',
+      title: 'Age',
+      type: 'number',
+      ariaLabel: 'Enter your age here',
+      initialValue: 0,
+      required: true,
+    },
+  ],
+  email: [
+    {
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      ariaLabel: 'Enter your email here',
+      initialValue: '',
+      required: true,
+    },
+  ],
   summary: [],
 }
 
@@ -57,7 +76,8 @@ const Buyflow: React.FC<BuyflowProps> = (props) => {
         <SummaryStep collectedData={collectedData} />
       ) : (
         <DataInputStep
-          inputData={INPUT_DATA_TO_STEPS[currentStep]}
+          ariaLabel="User data input form"
+          inputProps={INPUT_PROPS_TO_STEPS[currentStep]}
           onSubmit={onSubmit}
         />
       )}

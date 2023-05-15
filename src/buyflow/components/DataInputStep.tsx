@@ -1,29 +1,32 @@
 import { useState } from 'react'
-import { BuyFlowData, InputName, InputProps } from './types'
+import { BuyFlowData, InputProps } from '../types'
 
 interface Props {
-  inputData: InputProps[]
+  ariaLabel?: string
+  inputProps: InputProps[]
   onSubmit: (value: Partial<BuyFlowData>) => void
 }
 
-const DataInputStep = ({ inputData, onSubmit }: Props) => {
+const DataInputStep = ({ ariaLabel, inputProps, onSubmit }: Props) => {
   const [data, setData] = useState<Partial<BuyFlowData>>({})
 
   return (
     <form
+      aria-label={ariaLabel}
       onSubmit={(event) => {
         event.preventDefault()
 
         onSubmit(data)
       }}
     >
-      {inputData.map(({ title, type, name }) => (
+      {inputProps.map(({ title, type, name, ariaLabel, required }) => (
         <div key={name}>
           <label htmlFor={name}>{title + ' '}</label>
           <input
-            required
+            required={required}
             type={type}
             name={name}
+            aria-label={ariaLabel}
             onChange={({ target: { value } }) => {
               setData({
                 ...data,
@@ -33,7 +36,9 @@ const DataInputStep = ({ inputData, onSubmit }: Props) => {
           ></input>
         </div>
       ))}
-      <button type="submit">Next</button>
+      <button type="submit" aria-label="Click to get to the next step">
+        Next
+      </button>
     </form>
   )
 }
