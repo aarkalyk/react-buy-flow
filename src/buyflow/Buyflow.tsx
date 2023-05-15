@@ -1,40 +1,102 @@
 import React, { useState } from 'react'
-import AgeStep from './AgeStep'
-import EmailStep from './EmailStep'
-import SummaryStep from './SummaryStep'
+
+import DataInputStep from './components/DataInputStep'
+import SummaryStep from './components/SummaryStep'
+import { BuyFlowData, InputProps, ProductIds } from './types'
 
 interface BuyflowProps {
   productId: ProductIds
 }
 
-export enum ProductIds {
-  devIns = 'dev_ins',
-}
-
-const PRODUCT_IDS_TO_NAMES = {
+const PRODUCT_IDS_TO_NAMES: { [key in ProductIds]: string } = {
   [ProductIds.devIns]: 'Developer Insurance',
+  [ProductIds.designerIns]: 'Designer Insurance',
 }
 
-const Buyflow: React.FC<BuyflowProps> = (props) => {
-  const [currentStep, setStep] = useState('email')
-  const [collectedData, updateData] = useState({
+type StepName = 'email' | 'age' | 'fullName' | 'summary'
+
+const PRODUCT_IDS_TO_STEPS: { [key in ProductIds]: StepName[] } = {
+  [ProductIds.devIns]: ['email', 'age', 'summary'],
+  [ProductIds.designerIns]: ['email', 'age', 'fullName', 'summary'],
+}
+
+const INPUT_PROPS_TO_STEPS: { [key in StepName]: InputProps[] } = {
+  age: [
+    {
+      name: 'age',
+      title: 'Age',
+      type: 'number',
+      ariaLabel: 'Enter your age here',
+      initialValue: 0,
+      required: true,
+    },
+  ],
+  email: [
+    {
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      ariaLabel: 'Enter your email here',
+      initialValue: '',
+      required: true,
+    },
+  ],
+  fullName: [
+    {
+      name: 'firstName',
+      title: 'First name',
+      type: 'string',
+      ariaLabel: 'Enter your first name here',
+      initialValue: '',
+      required: true,
+    },
+    {
+      name: 'lastName',
+      title: 'Last name',
+      type: 'string',
+      ariaLabel: 'Enter your last name here',
+      initialValue: '',
+      required: true,
+    },
+  ],
+  summary: [],
+}
+
+const Buyflow: React.FC<BuyflowProps> = ({ productId }) => {
+  const [currentStepIndex, setStepIndex] = useState(0)
+  const [collectedData, updateData] = useState<BuyFlowData>({
     email: '',
     age: 0,
   })
-  const getStepCallback = (nextStep: string) => (field: string, value: any) => {
-    updateData({ ...collectedData, [field]: value })
-    setStep(nextStep)
+
+  const onSubmit = (value: Partial<BuyFlowData>) => {
+    if (currentStepIndex < PRODUCT_IDS_TO_STEPS[productId].length - 1)
+      setStepIndex((prevStep) => prevStep + 1)
+
+    updateData({
+      ...collectedData,
+      ...value,
+    })
   }
+
+  if (!PRODUCT_IDS_TO_STEPS[productId].length) {
+    return <div>There are no offers at the moment, please come back later</div>
+  }
+
+  const currentStep = PRODUCT_IDS_TO_STEPS[productId][currentStepIndex]
+
   return (
     <>
-      <h4>Buying {PRODUCT_IDS_TO_NAMES[props.productId]}</h4>
-      {(currentStep === 'email' && <EmailStep cb={getStepCallback('age')} />) ||
-        (currentStep === 'age' && (
-          <AgeStep cb={getStepCallback('summary')} />
-        )) ||
-        (currentStep === 'summary' && (
-          <SummaryStep collectedData={collectedData} />
-        ))}
+      <h4>Buying {PRODUCT_IDS_TO_NAMES[productId]}</h4>
+      {currentStep === 'summary' ? (
+        <SummaryStep productId={productId} collectedData={collectedData} />
+      ) : (
+        <DataInputStep
+          ariaLabel="User data input form"
+          inputProps={INPUT_PROPS_TO_STEPS[currentStep]}
+          onSubmit={onSubmit}
+        />
+      )}
     </>
   )
 }
