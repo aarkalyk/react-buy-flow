@@ -1,8 +1,9 @@
 import { fireEvent, render } from '@testing-library/react'
 import user from '@testing-library/user-event'
-
-import Buyflow, { ProductIds } from './Buyflow'
 import { BrowserRouter } from 'react-router-dom'
+
+import Buyflow from './Buyflow'
+import { ProductIds } from './types'
 
 describe('<Buyflow />', () => {
   describe('dev insurance flow', () => {

@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/react'
 
 import SummaryStep from './SummaryStep'
 
-import { BuyFlowData } from '../types'
+import { BuyFlowData, ProductIds } from '../types'
 
 const mockBuyFlowData: BuyFlowData = {
   age: 30,
@@ -13,9 +13,15 @@ const mockBuyFlowData: BuyFlowData = {
 
 describe('<SummaryStep />', () => {
   it('should display the collected user data', () => {
-    const component = render(<SummaryStep collectedData={mockBuyFlowData} />, {
-      wrapper: BrowserRouter,
-    })
+    const component = render(
+      <SummaryStep
+        productId={ProductIds.devIns}
+        collectedData={mockBuyFlowData}
+      />,
+      {
+        wrapper: BrowserRouter,
+      }
+    )
 
     expect(component.queryByText(`Age: ${mockBuyFlowData.age}`)).not.toBeNull()
     expect(
@@ -23,12 +29,15 @@ describe('<SummaryStep />', () => {
     ).not.toBeNull()
   })
 
-  it('should redirect the user to the purchased route when "Purchase" link is clicked', () => {
+  it('should redirect the user to the purchased route with the provided product id when "Purchase" link is clicked', () => {
     const history = createMemoryHistory()
 
     const component = render(
       <Router history={history}>
-        <SummaryStep collectedData={mockBuyFlowData} />
+        <SummaryStep
+          productId={ProductIds.devIns}
+          collectedData={mockBuyFlowData}
+        />
       </Router>
     )
 
@@ -38,6 +47,8 @@ describe('<SummaryStep />', () => {
     fireEvent.click(purchaseLink)
 
     expect(history.entries).toHaveLength(2)
-    expect(history.entries[1].pathname).toEqual('/purchased=dev_ins')
+    expect(history.entries[1].pathname).toEqual(
+      `/purchased=${ProductIds.devIns}`
+    )
   })
 })

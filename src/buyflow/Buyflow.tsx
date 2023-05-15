@@ -2,15 +2,10 @@ import React, { useState } from 'react'
 
 import DataInputStep from './components/DataInputStep'
 import SummaryStep from './components/SummaryStep'
-import { BuyFlowData, InputProps } from './types'
+import { BuyFlowData, InputProps, ProductIds } from './types'
 
 interface BuyflowProps {
   productId: ProductIds
-}
-
-export enum ProductIds {
-  devIns = 'dev_ins',
-  designerIns = 'designer_ins',
 }
 
 const PRODUCT_IDS_TO_NAMES: { [key in ProductIds]: string } = {
@@ -67,7 +62,7 @@ const INPUT_PROPS_TO_STEPS: { [key in StepName]: InputProps[] } = {
   summary: [],
 }
 
-const Buyflow: React.FC<BuyflowProps> = (props) => {
+const Buyflow: React.FC<BuyflowProps> = ({ productId }) => {
   const [currentStepIndex, setStepIndex] = useState(0)
   const [collectedData, updateData] = useState<BuyFlowData>({
     email: '',
@@ -75,7 +70,7 @@ const Buyflow: React.FC<BuyflowProps> = (props) => {
   })
 
   const onSubmit = (value: Partial<BuyFlowData>) => {
-    if (currentStepIndex < PRODUCT_IDS_TO_STEPS[props.productId].length - 1)
+    if (currentStepIndex < PRODUCT_IDS_TO_STEPS[productId].length - 1)
       setStepIndex((prevStep) => prevStep + 1)
 
     updateData({
@@ -84,17 +79,17 @@ const Buyflow: React.FC<BuyflowProps> = (props) => {
     })
   }
 
-  if (!PRODUCT_IDS_TO_STEPS[props.productId].length) {
+  if (!PRODUCT_IDS_TO_STEPS[productId].length) {
     return <div>There are no offers at the moment, please come back later</div>
   }
 
-  const currentStep = PRODUCT_IDS_TO_STEPS[props.productId][currentStepIndex]
+  const currentStep = PRODUCT_IDS_TO_STEPS[productId][currentStepIndex]
 
   return (
     <>
-      <h4>Buying {PRODUCT_IDS_TO_NAMES[props.productId]}</h4>
+      <h4>Buying {PRODUCT_IDS_TO_NAMES[productId]}</h4>
       {currentStep === 'summary' ? (
-        <SummaryStep collectedData={collectedData} />
+        <SummaryStep productId={productId} collectedData={collectedData} />
       ) : (
         <DataInputStep
           ariaLabel="User data input form"

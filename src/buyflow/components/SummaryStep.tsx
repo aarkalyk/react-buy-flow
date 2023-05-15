@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { BuyFlowData, InputName } from '../types'
+
+import { BuyFlowData, InputName, ProductIds } from '../types'
 
 interface SummaryStepProps {
+  productId: ProductIds
   collectedData: BuyFlowData
 }
 
@@ -13,7 +15,10 @@ const TITLE_TO_INPUT_NAME: { [key in InputName]: string } = {
   lastName: 'Last name',
 }
 
-const SummaryStep: React.FC<SummaryStepProps> = ({ collectedData }) => {
+const SummaryStep: React.FC<SummaryStepProps> = ({
+  productId,
+  collectedData,
+}) => {
   return (
     <div aria-label="Summary of your entered data">
       {(Object.entries(collectedData) as [InputName, string][]).map(
@@ -22,7 +27,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ collectedData }) => {
         )
       )}
       <div>
-        <Link to="/purchased=dev_ins">Purchase</Link>
+        <Link to={`/purchased=${productId}`}>Purchase</Link>
       </div>
     </div>
   )

@@ -15,3 +15,8 @@ export type BuyFlowData = {
   firstName?: string
   lastName?: string
 }
+
+export enum ProductIds {
+  devIns = 'dev_ins',
+  designerIns = 'designer_ins',
+}
